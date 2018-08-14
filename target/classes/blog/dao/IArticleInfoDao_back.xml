@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="blog.dao.IArticleInfoDao">
+	
+	<!-- 建立sql查询结果字段与实体属性的映射关系 -->
+	<resultMap id="ArticleInfoCustomMap" type="blog.entity.ArticleInfoCustom" extends="ArticleInfoMap">
+		
+		<result column="name" property="name" />
+	</resultMap>
+	
+	<resultMap id="ArticleInfoMap" type="blog.entity.ArticleInfo">
+		<result column="id" property="id" />
+		<result column="type_id" property="typeId" jdbcType="INTEGER" />
+		
+		<result column="title" property="title" />
+		<result column="content" property="content" />
+		<result column="content_text" property="contentText" />
+		<result column="cover" property="cover" />
+		<result column="view_count" property="viewCount" />
+		<result column="update_time" property="updateTime" />
+		<result column="status" property="status" />
+	</resultMap>
+	<!-- 查询所有文章-->
+	<select id="listNormal" resultMap="ArticleInfoCustomMap">
+	SELECT
+		article_info.id,
+		type_info.name,
+		article_info.title,
+		article_info.update_time,
+		article_info.view_count
+	FROM
+		article_info,type_info
+	WHERE
+		article_info.type_id=type_info.id
+	AND
+		`status`='1'
+	ORDER BY
+		update_time DESC
+	</select>
+	
+	<!-- 根据主键查询单个文章-->
+	<select id="selectById" resultMap="ArticleInfoCustomMap">
+		SELECT
+			article_info.id,
+			article_info.type_id,
+			type_info.name,
+			article_info.title,
+			article_info.cover,
+			article_info.content,
+			article_info.content_text,
+			article_info.update_time,
+			article_info.view_count
+		FROM
+			article_info,
+			type_info
+		WHERE
+			article_info.type_id = type_info.id
+		AND article_info.status = '1'
+		AND article_info.id = #{id}
+			
+	</select>
+	
+	<!-- 文章插入 -->
+	<insert id="insert" parameterType="blog.entity.ArticleInfo">
+		
+		insert into article_info
+			<trim prefix="(" suffix=")" suffixOverrides=",">
+<!-- 				<if test="type_id!=null and type_id!=''">type_id,</if>
+ -->				
+ 				type_id,
+ 				<if test="title!=null and title!=''">title,</if>
+				
+				<if test="content!=null and content!=''">content,</if>
+				<if test="content_text!=null and content_text!=''">content_text,</if>
+				<if test="cover!=null and cover!=''">cover,</if>
+				<if test="view_count!=null and view_count!=''">view_count,</if>
+				<if test="update_time!=null and update_time!=''">update_time,</if>
+				<if test="status!=null and status!=''">status,</if>
+			</trim>
+			
+			<trim prefix="values (" suffix=")" suffixOverrides=",">
+<!-- 				<if test="type_id!=null">#{type_id},</if>
+ -->				#{type_id},
+ 				<if test="title!=null">#{title},</if>
+				<if test="content!=null">#{content},</if>
+				<if test="content_text!=null">#{content_text},</if>
+				<if test="cover!=null">#{cover},</if>
+				<if test="view_count!=null">#{view_count},</if>
+				<if test="update_time!=null">#{update_time},</if>
+				<if test="status!=null">#{status},</if>
+			
+			</trim>
+	
+	</insert>
+	<!-- 文章跟新 -->
+	<update id="update" parameterType="blog.entity.ArticleInfo">
+		update article_info
+		<set>
+			<if test="type_id!=null and sort!=''">type_id=#{type_id},</if>
+			<if test="title!=null and title!=''">title=#{title},</if>
+			<if test="content!=null and content!=''">content=#{content},</if>
+			<if test="content_text!=null and content_text!=''">content_text=#{content_text},</if>
+			<if test="cover!=null and cover!=''">cover=#{cover},</if>
+			<if test="view_count!=null and view_count!=''">view_count=#{view_count},</if>
+			<if test="update_time!=null and update_time!=''">update_time=#{update_time},</if>
+			<if test="status!=null and status!=''">status=#{status},</if>
+		</set>
+		<where>id=#{id}</where>
+	
+	</update>
+</mapper>

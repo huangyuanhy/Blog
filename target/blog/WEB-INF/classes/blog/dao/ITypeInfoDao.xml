@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="blog.dao.ITypeInfoDao">
+	
+	<!-- 建立sql查询结果字段与实体属性的映射关系 -->
+	<resultMap id="TypeInfoMap" type="blog.entity.TypeInfo">
+		<result column="id" property="id" />
+		<result column="name" property="name" jdbcType="VARCHAR"/>
+		<result column="sort" property="sort" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<!-- 校验用户 -->
+	<select id="list" resultMap="TypeInfoMap">
+		SELECT
+			*
+		FROM
+			type_info
+		order by
+			sort
+		
+	</select>
+	<!-- 根据主键查询分类 -->
+	<select id="selectById" resultMap="TypeInfoMap">
+		SELECT
+			*
+		FROM
+			type_info
+		where id=#{id}
+		
+	</select>
+
+	<!-- 插入一条新的数据 -->
+	<insert id="insert">
+		insert into type_info
+			<trim prefix="(" suffix=")" suffixOverrides=",">
+				<if test="sort!=null and sort!=''">sort,</if>
+				<if test="name!=null and name!=''">name,</if>
+			</trim>
+			
+			<trim prefix="values (" suffix=")" suffixOverrides=",">
+				<if test="sort!=null">#{sort},</if>
+				<if test="name!=null">#{name},</if>
+			
+			</trim>
+			
+	</insert>
+	<!-- 更新一条数据 -->
+	<update id="update">
+		update type_info
+		<set>
+			<if test="sort!=null and sort!=''">sort=#{sort},</if>
+			<if test="name!=null and name!=''">name=#{name},</if>
+		</set>
+		<where>id=#{id}</where>
+	</update>
+	
+	<!-- 批量删除 -->
+	<delete id="delete">
+		delete from type_info where id in
+		<foreach collection="idArr" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+</mapper>

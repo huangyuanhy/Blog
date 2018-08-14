@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="blog.dao.IUserInfoDao">
+	
+	<!-- 建立sql查询结果字段与实体属性的映射关系 -->
+	<resultMap id="UserInfoMap" type="blog.entity.UserInfo">
+		<result column="id" property="id" />
+		<result column="name" property="name" jdbcType="VARCHAR"/>
+		<result column="password" property="password" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<!-- 校验用户 -->
+	<select id="selectUser" resultMap="UserInfoMap">
+		SELECT
+			*
+		FROM
+			user_inf
+		WHERE
+			name=#{name,jdbcType=VARCHAR}
+			AND password=#{password,jdbcType=VARCHAR}
+		
+	</select>
+</mapper>
